@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 # Global constants
 ENTERPRISE_SLUG = os.getenv('INPUT_ENT_NAME')
-AUTH_TOKEN = os.getenv('INPUT_GITHUB_TOKEN')
+AUTH_TOKEN = os.getenv('INPUT_REPORTS_TOKEN')
 
 # API version header
 headers = {
