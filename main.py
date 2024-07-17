@@ -15,12 +15,17 @@ headers = {
     "X-GitHub-Api-Version": "2022-11-28"
 }
 
+# Debug statements
+print(f"ENTERPRISE_SLUG: {ENTERPRISE_SLUG}")
+print(f"AUTH_TOKEN: {AUTH_TOKEN[:5]}...")  # Print only the first 5 characters for security
+
 def get_teams():
     url = f"https://api.github.com/enterprises/{ENTERPRISE_SLUG}/teams"
     teams = []
     
     while url:
         response = requests.get(url, headers=headers)
+        print(f"Request URL: {url}, Status Code: {response.status_code}")  # Debug statement
         if response.status_code == 200:
             data = response.json()
             teams.extend(data)
