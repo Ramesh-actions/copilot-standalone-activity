@@ -5,8 +5,8 @@ import datetime
 from datetime import datetime, timezone
 
 # Global constants
-ENTERPRISE_SLUG = os.environ.get('GH_NAME')
-AUTH_TOKEN = os.environ.get('GH_ADMIN_TOKEN')
+ENTERPRISE_SLUG = os.getenv('INPUT_ENT_NAME')
+AUTH_TOKEN = os.getenv('INPUT_GITHUB_TOKEN')
 
 # API version header
 headers = {
