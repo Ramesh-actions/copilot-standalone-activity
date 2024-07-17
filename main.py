@@ -8,16 +8,19 @@ from datetime import datetime, timezone
 ENTERPRISE_SLUG = os.getenv('INPUT_ENT_NAME')
 AUTH_TOKEN = os.getenv('INPUT_REPORTS_TOKEN')
 
+if not AUTH_TOKEN:
+    raise ValueError("The INPUT_REPORTS_TOKEN environment variable is not set.")
+
+# Debug statements
+print(f"ENTERPRISE_SLUG: {ENTERPRISE_SLUG}")
+print(f"AUTH_TOKEN: {AUTH_TOKEN[:5]}...")  # Print only the first 5 characters for security
+
 # API version header
 headers = {
     "Accept": "application/vnd.github+json",
     "Authorization": f"Bearer {AUTH_TOKEN}",
     "X-GitHub-Api-Version": "2022-11-28"
 }
-
-# Debug statements
-print(f"ENTERPRISE_SLUG: {ENTERPRISE_SLUG}")
-print(f"AUTH_TOKEN: {AUTH_TOKEN[:5]}...")  # Print only the first 5 characters for security
 
 def get_teams():
     url = f"https://api.github.com/enterprises/{ENTERPRISE_SLUG}/teams"
