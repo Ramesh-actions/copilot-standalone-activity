@@ -1,0 +1,13 @@
+name: 'Fetch and Report Copilot Data'
+description: 'Fetches Copilot data and reports in the Actions summary'
+inputs:
+  ent_name:
+    description: 'GitHub enterprise name'
+    required: true
+  github_token:
+    description: 'GitHub token for authentication'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
