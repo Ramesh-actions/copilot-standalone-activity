@@ -1,12 +1,20 @@
 import requests
 import csv
 import os
-import datetime
-from datetime import datetime, timezone
+from datetime import datetime
 
 # Global constants
 ENTERPRISE_SLUG = os.getenv('INPUT_ENT_NAME')
-AUTH_TOKEN = os.getenv('INPUT_REPORTS_TOKEN')
+TEAM_NAME_FILTER = os.getenv('INPUT_TEAM_NAME')
+AUTH_TOKEN = os.getenv('INPUT_GITHUB_TOKEN')
+
+if not AUTH_TOKEN:
+    raise ValueError("The INPUT_GITHUB_TOKEN environment variable is not set.")
+
+# Debug statements
+print(f"ENTERPRISE_SLUG: {ENTERPRISE_SLUG}")
+print(f"TEAM_NAME_FILTER: {TEAM_NAME_FILTER}")
+print(f"AUTH_TOKEN: {AUTH_TOKEN[:5]}...")  # Print only the first 5 characters for security
 
 # API version header
 headers = {
@@ -21,6 +29,7 @@ def get_teams():
     
     while url:
         response = requests.get(url, headers=headers)
+        print(f"Request URL: {url}, Status Code: {response.status_code}")  # Debug statement
         if response.status_code == 200:
             data = response.json()
             teams.extend(data)
@@ -61,7 +70,16 @@ def get_copilot_billing_seats():
     return seats
 
 def main():
-    teams = get_teams()
+    # Get all teams if no specific team filter is provided, otherwise get only the specific team
+    if TEAM_NAME_FILTER:
+        teams = [team for team in get_teams() if team.get('name') == TEAM_NAME_FILTER]
+    else:
+        teams = get_teams()
+
+    if not teams:
+        print(f"No teams found for the filter '{TEAM_NAME_FILTER}'")
+        return
+
     print(f"Fetched {len(teams)} teams")
 
     copilot_seats = get_copilot_billing_seats()
@@ -92,9 +110,7 @@ def main():
     if not output_data:
         print("No data to write to CSV")
     else:
-
         # Specify the CSV file name
-        
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         csv_file_name = f"teams_{timestamp}.csv"
 
@@ -111,14 +127,6 @@ def main():
             # Write the data rows
             for row in output_data:
                 writer.writerow(row)
-
-
-        # with open('output.csv', 'w', newline='') as csvfile:
-        #     fieldnames = ['enterprise_name', 'team_name', 'user_name', 'copilot_activity', 'status', 'last_active_editor']
-        #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        #     writer.writeheader()
-        #     for row in output_data:
-        #         writer.writerow(row)
 
         print(f"Data written to {csv_file_name}")
 
