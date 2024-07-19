@@ -4,6 +4,9 @@ inputs:
   ent_name:
     description: 'GitHub enterprise name'
     required: true
+  team_name:
+    description: 'The team slug'
+    required: false
   github_token:
     description: 'GitHub token for authentication'
     required: true
